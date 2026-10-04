@@ -1,0 +1,299 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expenses Calculator</title>
+
+    <style>
+        /* Page design */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f4f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main container */
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        /* Input section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #444;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        /* Add button */
+        .add-btn {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Expense list */
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-left: 5px solid #4CAF50;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+        }
+
+        .expense-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .expense-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .expense-date {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .expense-amount {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        /* Delete button */
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Total expense box */
+        .total-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .total-box h3 {
+            margin: 0;
+            color: #2e7d32;
+        }
+
+        /* Mobile-friendly design */
+        @media (max-width: 500px) {
+            .container {
+                width: 85%;
+            }
+
+            .expense-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .delete-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>💰 Expenses Calculator</h1>
+
+        <!-- Input section -->
+        <div class="input-section">
+
+            <label for="date">Date:</label>
+            <input type="date" id="date">
+
+            <label for="expenseName">Expense Name:</label>
+            <input type="text" id="expenseName" placeholder="Example: Food, Travel, Books">
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01">
+
+            <button class="add-btn" onclick="addExpense()">
+                Add Expense
+            </button>
+
+        </div>
+
+        <!-- Expense list -->
+        <h2>Added Expenses</h2>
+
+        <div id="expenseList">
+            <!-- Expenses will appear here -->
+        </div>
+
+        <!-- Total -->
+        <div class="total-box">
+            <h3>Total Expense: ₹<span id="totalExpense">0.00</span></h3>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // Store all expenses
+        let expenses = [];
+
+        // Function to add an expense
+        function addExpense() {
+
+            // Get values from input fields
+            let date = document.getElementById("date").value;
+            let expenseName = document.getElementById("expenseName").value;
+            let amount = document.getElementById("amount").value;
+
+            // Check if all fields are filled
+            if (date === "" || expenseName === "" || amount === "") {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Convert amount into a number
+            amount = parseFloat(amount);
+
+            // Create expense object
+            let expense = {
+                date: date,
+                name: expenseName,
+                amount: amount
+            };
+
+            // Add expense to the array
+            expenses.push(expense);
+
+            // Display expenses
+            displayExpenses();
+
+            // Clear input fields
+            document.getElementById("expenseName").value = "";
+            document.getElementById("amount").value = "";
+        }
+
+
+        // Function to display all expenses
+        function displayExpenses() {
+
+            let expenseList = document.getElementById("expenseList");
+
+            // Clear previous list
+            expenseList.innerHTML = "";
+
+            // Variable for total
+            let total = 0;
+
+            // Display each expense
+            expenses.forEach(function(expense, index) {
+
+                total = total + expense.amount;
+
+                let expenseItem = document.createElement("div");
+                expenseItem.className = "expense-item";
+
+                expenseItem.innerHTML = `
+                    <div class="expense-details">
+                        <span class="expense-name">
+                            ${expense.name}
+                        </span>
+
+                        <span class="expense-date">
+                            Date: ${expense.date}
+                        </span>
+
+                        <span class="expense-amount">
+                            ₹${expense.amount.toFixed(2)}
+                        </span>
+                    </div>
+
+                    <button class="delete-btn" onclick="deleteExpense(${index})">
+                        Delete
+                    </button>
+                `;
+
+                expenseList.appendChild(expenseItem);
+            });
+
+            // Display total expense
+            document.getElementById("totalExpense").textContent =
+                total.toFixed(2);
+        }
+
+
+        // Function to delete an expense
+        function deleteExpense(index) {
+
+            // Remove the selected expense
+            expenses.splice(index, 1);
+
+            // Display the updated list
+            displayExpenses();
+        }
+
+    </script>
+
+</body>
+</html>
+```
